@@ -17,40 +17,38 @@ var dataRef = new Firebase("https://suarez-train-schedul.firebaseio.com/"),
 ////////////////////////////////////
 dataRef.on("child_added", function(childSnapshot, prevChildKey) {
 
-		console.log(childSnapshot.val());
+		// console.log(childSnapshot.val());
         var zTrainName = childSnapshot.val().trainName;
         var zTrainDest = childSnapshot.val().trainDest;
         var zTrainFirstTime = childSnapshot.val().trainFirstTime;
         var zTrainFreq = childSnapshot.val().trainFreq;
 
-        console.log(zTrainName);
-        console.log(zTrainDest);
-        console.log(zTrainFirstTime);
-        console.log(zTrainFreq);
+        // console.log(zTrainName);
+        // console.log(zTrainDest);
+        // console.log(zTrainFirstTime);
+        // console.log(zTrainFreq);
 
         var startTime = moment(zTrainFirstTime, "HH:mm");
-        console.log(startTime);
+        // console.log(startTime);
 
         var now = moment().format("HH:mm");
 
         var endTime = moment(now, "HH:mm");
-        console.log(now);
+        // console.log(now);
 
-        var diffInHours = endTime.diff(startTime, "hours");
-        console.log(diffInHours);
+        var diffInMins = endTime.diff(startTime, "minutes");
+        // console.log(diffInMins);
 
-        var diffInMins = diffInHours * 60;
-        console.log(diffInMins);
+        var curTrainProg = (diffInMins % zTrainFreq);
+        // console.log(curTrainProg);
+        var minsAway = zTrainFreq - curTrainProg;
+        // console.log(minsAway);
 
-        var mod = diffInMins % zTrainFreq;
-        console.log(mod);
-        var minsAway = zTrainFreq - mod;
-        console.log(minsAway);
+        var nextArrival = 0;
+        //moment((now - minsAway), "HH:mm");
+        // console.log(nextArrival);
 
-        var nextArrival = moment((now - minsAway), "HH:mm");
-        console.log(nextArrival);
-
-        $("#train-data-table").prepend("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFreq + "</td><td>" + nextArrival + "</td><td>" + minsAway + "</td></tr>");
+        $("#train-data-table").prepend("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFirstTime + "</td><td>" + zTrainFreq + "</td><td>" + nextArrival + "</td><td>" + minsAway + "</td></tr>");
 
     },
 
@@ -71,10 +69,10 @@ $("#add-train").on("click", function(e) {
     trainFirstTime = $("#first-train-input").val().trim();
     trainFreq = $("#freq-input").val().trim();
 
-    console.log(trainName);
-    console.log(trainDest);
-    console.log(trainFirstTime);
-    console.log(trainFreq);
+    // console.log(trainName);
+    // console.log(trainDest);
+    // console.log(trainFirstTime);
+    // console.log(trainFreq);
 
     dataRef.push({
         trainName: trainName,
