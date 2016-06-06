@@ -5,9 +5,7 @@ var dataRef = new Firebase("https://suarez-train-schedul.firebaseio.com/"),
     trainName = "",
     trainDest = "",
     trainFirstTime = 0,
-    trainFreq = 0,
-    nextArrival = 0,
-    minsAway = 0;
+    trainFreq = 0;
 
 ////////////////////////////////////
 // FUNCTIONS
@@ -30,8 +28,27 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         console.log(zTrainFirstTime);
         console.log(zTrainFreq);
 
+        var startTime = moment(zTrainFirstTime, "HH:mm");
+        console.log(startTime);
+
         var now = moment().format("HH:mm");
+
+        var endTime = moment(now, "HH:mm");
         console.log(now);
+
+        var diffInHours = endTime.diff(startTime, "hours");
+        console.log(diffInHours);
+
+        var diffInMins = diffInHours * 60;
+        console.log(diffInMins);
+
+        var mod = diffInMins % zTrainFreq;
+        console.log(mod);
+        var minsAway = zTrainFreq - mod;
+        console.log(minsAway);
+
+        var nextArrival = moment((now - minsAway), "HH:mm");
+        console.log(nextArrival);
 
         $("#train-data-table").prepend("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFreq + "</td><td>" + nextArrival + "</td><td>" + minsAway + "</td></tr>");
 
