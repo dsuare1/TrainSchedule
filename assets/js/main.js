@@ -8,9 +8,37 @@ var dataRef = new Firebase("https://suarez-train-schedul.firebaseio.com/"),
     trainFreq = 0;
 
 ////////////////////////////////////
-// FUNCTIONS
+// VALIDATION FUNCTIONS
 ////////////////////////////////////
+// function checkName() {
 
+// };
+
+// function checkDest() {
+
+// };
+
+function checkTime(trainFirstTime) {
+    // regular expression to match required date format
+    re = /^([0-1]?[0-9]|2[0-3])(:[0-5][0-9])?$/;
+
+    if (trainFirstTime != '' && !trainFirstTime.match(re)) {
+        vex.dialog.alert("Please enter a valid time format (HH:mm -- 24-hour-time)");
+        return false;
+    }
+
+    return true;
+};
+
+// function checkFreq() {
+
+// };
+
+////////////////////////////////////
+// MODAL
+////////////////////////////////////
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
 
 ////////////////////////////////////
 // FIREBASE
@@ -58,7 +86,7 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         var nextArrivalFormatted = nextArrival.format("HH:mm");
 
         // prints all the above data to the DOM
-        $("#train-data-table").prepend("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFirstTime + "</td><td>" + zTrainFreq + "</td><td>" + nextArrivalFormatted + "</td><td>" + minsAway + "</td></tr>");
+        $("#train-data-table").append("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFirstTime + "</td><td>" + zTrainFreq + "</td><td>" + nextArrivalFormatted + "</td><td>" + minsAway + "</td></tr>");
 
     },
 
@@ -79,6 +107,7 @@ $("#add-train").on("click", function(e) {
     trainName = $("#name-input").val().trim();
     trainDest = $("#dest-input").val().trim();
     trainFirstTime = $("#first-train-input").val().trim();
+    checkTime(trainFirstTime);
     trainFreq = $("#freq-input").val().trim();
 
     // with this '.push' method, this updates the Firebase data storage object each time a user adds a new train
