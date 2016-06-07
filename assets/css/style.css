@@ -29,7 +29,7 @@ h1 {
 
 .panel {
 	border: 1px double #fcfe91;
-	background: linear-gradient( rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.35));
+	background: linear-gradient( rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.10));
 	color: #ddd;
 }
 

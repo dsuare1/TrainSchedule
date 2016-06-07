@@ -40,6 +40,17 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         // with this calculation, we are determining how many minutes we have left to wait until the next train
         var minsAway = zTrainFreq - curTrainProg;
 
+        ////////////////////////////////////
+        // HERE, I WAS TRYING TO ACCOUNT FOR IF THE CURRENT TIME 'NOW' IS EARLIER THAN THE FIRST TRAIN TIME, IT WOULD STORE THE FIRST TRAIN TIME IN THE 'NEXT ARRIVAL' VARIABLE
+        ////////////////////////////////////
+        // if (now <= zTrainFirstTime) {
+        //     var nextArrival = moment(zTrainFirstTime, "HH:mm");
+        //     minsAway = now - zTrainFirstTime;
+        // } else {
+        //     // calculates the time between now and when the next train will arrive
+        //     var nextArrival = moment().add(minsAway, "minutes");
+        // }
+
         // calculates the time between now and when the next train will arrive
         var nextArrival = moment().add(minsAway, "minutes");
 
