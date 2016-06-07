@@ -1,3 +1,65 @@
-thead {
-	font-weight: bold;
+body {
+	background: linear-gradient( rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.80)), url(../img/az-sunrise.jpg) no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    background-attachment: fixed;
+}
+
+.jumbotron {
+	background: none;
+	color: #fcfe91;
+}
+
+h1 {
+	border-top: 5px solid #a8bfe4;
+	border-bottom: 5px solid #a8bfe4;
+	padding: 20px;
+}
+
+.panel-default .panel-heading {
+	background: linear-gradient( rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.95));
+	color: #a8bfe4;
+}
+
+.panel-title {
+	font-size: 2em;
+}
+
+.panel {
+	border: 1px double #fcfe91;
+	background: linear-gradient( rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.35));
+	color: #ddd;
+}
+
+th {
+	font-size: 1.5em;
+	background-color: #000;
+}
+
+tr {
+	color: #fcfe91;
+}
+
+tr:hover {
+	background: linear-gradient( rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.95));
+}
+
+td {
+	border-left: .05px groove #fcfe91;
+}
+
+.form-control {
+	background: linear-gradient( rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
+}
+
+.btn {
+	background: linear-gradient( rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.25));
+	border: .5px solid #fff;
+}
+
+.btn:hover {
+	background: linear-gradient( rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.95));
+	border: .5px solid #fff;
 }
