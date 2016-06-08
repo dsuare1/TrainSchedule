@@ -96,10 +96,10 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         // if the current time is earlier than the first arrival, 'Next Arrival' shows the 'First Train Time' and 'Minutes Away' shows "n/a"
         if (diffInMins < 0) {
             var nextArrival = moment(zTrainFirstTime, "HH:mm");
-            minsAway = "(train not yet running;<br>check 'First Train Time')";
+            minsAway = "(train not yet running;<br> check 'First Train Time')";
         } else if (diffInMins == 0) {
             var nextArrival = moment(zTrainFirstTime, "HH:mm");
-            minsAway = "First service beginning now!<br>Please board your train...";
+            minsAway = "First service beginning now!<br> Please board your train...";
         } else {
             // calculates the time between now and when the next train will arrive
             var nextArrival = moment().add(minsAway, "minutes");
@@ -109,7 +109,13 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         var nextArrivalFormatted = nextArrival.format("HH:mm");
 
         // prints all the above data to the DOM
-        $("#train-data-table").append("<tr><td class='data-cell'>" + zTrainName + "</td><td class='data-cell'>" + zTrainDest + "</td><td class='data-cell'>" + zTrainFirstTime + "</td><td class='data-cell'>" + zTrainFreq + "</td><td class='data-cell'>" + nextArrivalFormatted + "</td><td class='data-cell'>" + minsAway + "</td></tr>");
+        $("#train-data-table").append(
+            "<tr><td class='data-cell' data-id='trainName'>" + zTrainName + 
+            "</td><td class='data-cell' data-id='trainDestination'>" + zTrainDest + 
+            "</td><td class='data-cell' data-id='firstTrainTime'>" + zTrainFirstTime + 
+            "</td><td class='data-cell' data-id='trainFreqency'>" + zTrainFreq + 
+            "</td><td class='data-cell' data-id='nextTrainArrival'>" + nextArrivalFormatted + 
+            "</td><td class='data-cell' data-id='minsAway'>" + minsAway + "</td></tr>");
 
     },
 
@@ -130,13 +136,9 @@ $("#add-train").on("click", function(e) {
 
     // stores all the values the user enters
     trainName = $("#name-input").val().trim();
-    // checkName(trainName);
     trainDest = $("#dest-input").val().trim();
-    // checkDest(trainDest);
     trainFirstTime = $("#first-train-input").val().trim();
-    // checkTime(trainFirstTime);
     trainFreq = $("#freq-input").val().trim();
-    // checkFreq(trainFreq);
 
     // with this '.push' method, this updates the Firebase data storage object each time a user adds a new train (with form validation)
     if (checkName(trainName) && checkDest(trainDest) && checkTime(trainFirstTime) && checkFreq(trainFreq)) {
@@ -161,15 +163,40 @@ $("#add-train").on("click", function(e) {
 // double-click editable table cells
 $("tbody").on("dblclick", ".data-cell", function() {
     var originalContent = $(this).text();
+    console.log(originalContent);
+    
+    ///////////////////////////////////////////////////////////////////
+    // here is where I want the Firebase data to be updated upon the user changing something on a double-click; how do I tell it to select the specific object, i.e. the first row of the table is the first object (using .push on the Firebase object)
+    ///////////////////////////////////////////////////////////////////
+    var id = $(this).attr("data-id");
+    console.log(id);
+
+    // where do I go from here?
+    ///////////////////////////////////////////////////////////////////
+
+
     $(this).addClass("cellEditing");
     $(this).html("<input type='text' id='quick-edit' value='" + originalContent + "'>");
-    $(this).children().first().focus(); // ???
+    $(this).children().first().focus().select();
     $(this).children().first().keypress(function(e) {
         if (e.which == 13) { // 'enter' key
             var newContent = $(this).val();
             $(this).parent().text(newContent);
             $(this).parent().removeClass("cellEditing");
         }
+
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
+        
+        // update Firebase db with new input
+        // if (id === "trainName") {
+        //     dataRef.update({
+        //         trainName: newContent
+        //     })
+        // }
+
+        ///////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////
     });
 
     $(this).children().first().blur(function() {
