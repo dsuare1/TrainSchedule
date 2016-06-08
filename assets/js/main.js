@@ -1,3 +1,5 @@
+$(function() {
+    $("#name-input").focus();
 ////////////////////////////////////
 // GLOBAL VARIABLES
 ////////////////////////////////////
@@ -103,9 +105,6 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
             var nextArrival = moment().add(minsAway, "minutes");
         }
 
-        // calculates the time between now and when the next train will arrive
-        // var nextArrival = moment().add(minsAway, "minutes");
-
         // formats the 'nextArrival' time into a moment object
         var nextArrivalFormatted = nextArrival.format("HH:mm");
 
@@ -131,15 +130,15 @@ $("#add-train").on("click", function(e) {
 
     // stores all the values the user enters
     trainName = $("#name-input").val().trim();
-    checkName(trainName);
+    // checkName(trainName);
     trainDest = $("#dest-input").val().trim();
-    checkDest(trainDest);
+    // checkDest(trainDest);
     trainFirstTime = $("#first-train-input").val().trim();
-    checkTime(trainFirstTime);
+    // checkTime(trainFirstTime);
     trainFreq = $("#freq-input").val().trim();
-    checkFreq(trainFreq);
+    // checkFreq(trainFreq);
 
-    // with this '.push' method, this updates the Firebase data storage object each time a user adds a new train
+    // with this '.push' method, this updates the Firebase data storage object each time a user adds a new train (with form validation)
     if (checkName(trainName) && checkDest(trainDest) && checkTime(trainFirstTime) && checkFreq(trainFreq)) {
         dataRef.push({
             trainName: trainName,
@@ -156,6 +155,7 @@ $("#add-train").on("click", function(e) {
     $("#dest-input").val("");
     $("#first-train-input").val("");
     $("#freq-input").val("");
+    $("#name-input").focus();
 });
 
 // double-click editable table cells
@@ -178,3 +178,6 @@ $("tbody").on("dblclick", ".data-cell", function() {
     });
 
 });
+
+});
+
