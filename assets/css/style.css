@@ -50,6 +50,10 @@ td {
     border-left: .05px groove #fcfe91;
 }
 
+#quick-edit {
+	background: linear-gradient( rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
+}
+
 .form-control {
     background: linear-gradient( rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45));
     color: #fcff00;

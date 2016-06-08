@@ -10,29 +10,49 @@ var dataRef = new Firebase("https://suarez-train-schedul.firebaseio.com/"),
 ////////////////////////////////////
 // VALIDATION FUNCTIONS
 ////////////////////////////////////
-// function checkName() {
+function checkName(trainName) {
+    // regular expression to match required name format
+    re = /[a-z,]/gi;
 
-// };
+    if (trainDest !== '' && !trainDest.match(re)) {
+        vex.dialog.alert("Please enter a valid destination");
+        return false;
+    }
+    return true;
+};
 
-// function checkDest() {
+function checkDest(trainDest) {
+    // regular expression to match required destination format
+    re = /[a-z,]/gi;
 
-// };
+    if (trainDest !== '' && !trainDest.match(re)) {
+        vex.dialog.alert("Please enter a valid destination");
+        return false;
+    }
+    return true;
+};
 
 function checkTime(trainFirstTime) {
     // regular expression to match required date format
     re = /^([0-1]?[0-9]|2[0-3])(:[0-5][0-9])?$/;
 
-    if (trainFirstTime != '' && !trainFirstTime.match(re)) {
+    if (trainFirstTime !== '' && !trainFirstTime.match(re)) {
         vex.dialog.alert("Please enter a valid time format (HH:mm -- 24-hour-time)");
         return false;
     }
-
     return true;
 };
 
-// function checkFreq() {
+function checkFreq(trainFreq) {
+    // regular expression to match required frequency format
+    re = /(?!\d{3})([0-1]?[0-9])/;
 
-// };
+    if (trainFreq !== '' && !trainFreq.match(re)) {
+        vex.dialog.alert("Pleast enter a train frequency in minutes");
+        return false;
+    }
+    return true;
+};
 
 ////////////////////////////////////
 // MODAL
@@ -44,12 +64,15 @@ var span = document.getElementsByClassName("close")[0];
 // FIREBASE
 ////////////////////////////////////
 dataRef.on("child_added", function(childSnapshot, prevChildKey) {
-		// sets variables of most recently added train
+        // sets variables of most recently added train each time a new train is added
         var zTrainName = childSnapshot.val().trainName;
         var zTrainDest = childSnapshot.val().trainDest;
         var zTrainFirstTime = childSnapshot.val().trainFirstTime;
         var zTrainFreq = childSnapshot.val().trainFreq;
 
+        ////////////////////////////
+        // MOMENT.JS FORMATTING
+        ////////////////////////////
         // converts "First Train Time" value to a moment oject (for manipulation)
         var startTime = moment(zTrainFirstTime, "HH:mm");
 
@@ -68,25 +91,26 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
         // with this calculation, we are determining how many minutes we have left to wait until the next train
         var minsAway = zTrainFreq - curTrainProg;
 
-        ////////////////////////////////////
-        // HERE, I WAS TRYING TO ACCOUNT FOR IF THE CURRENT TIME 'NOW' IS EARLIER THAN THE FIRST TRAIN TIME, IT WOULD STORE THE FIRST TRAIN TIME IN THE 'NEXT ARRIVAL' VARIABLE
-        ////////////////////////////////////
-        // if (now <= zTrainFirstTime) {
-        //     var nextArrival = moment(zTrainFirstTime, "HH:mm");
-        //     minsAway = now - zTrainFirstTime;
-        // } else {
-        //     // calculates the time between now and when the next train will arrive
-        //     var nextArrival = moment().add(minsAway, "minutes");
-        // }
+        // if the current time is earlier than the first arrival, 'Next Arrival' shows the 'First Train Time' and 'Minutes Away' shows "n/a"
+        if (diffInMins < 0) {
+            var nextArrival = moment(zTrainFirstTime, "HH:mm");
+            minsAway = "(train not yet running;<br>check 'First Train Time')";
+        } else if (diffInMins == 0) {
+            var nextArrival = moment(zTrainFirstTime, "HH:mm");
+            minsAway = "First service beginning now!<br>Please board your train...";
+        } else {
+            // calculates the time between now and when the next train will arrive
+            var nextArrival = moment().add(minsAway, "minutes");
+        }
 
         // calculates the time between now and when the next train will arrive
-        var nextArrival = moment().add(minsAway, "minutes");
+        // var nextArrival = moment().add(minsAway, "minutes");
 
         // formats the 'nextArrival' time into a moment object
         var nextArrivalFormatted = nextArrival.format("HH:mm");
 
         // prints all the above data to the DOM
-        $("#train-data-table").append("<tr><td>" + zTrainName + "</td><td>" + zTrainDest + "</td><td>" + zTrainFirstTime + "</td><td>" + zTrainFreq + "</td><td>" + nextArrivalFormatted + "</td><td>" + minsAway + "</td></tr>");
+        $("#train-data-table").append("<tr><td class='data-cell'>" + zTrainName + "</td><td class='data-cell'>" + zTrainDest + "</td><td class='data-cell'>" + zTrainFirstTime + "</td><td class='data-cell'>" + zTrainFreq + "</td><td class='data-cell'>" + nextArrivalFormatted + "</td><td class='data-cell'>" + minsAway + "</td></tr>");
 
     },
 
@@ -98,29 +122,59 @@ dataRef.on("child_added", function(childSnapshot, prevChildKey) {
 ////////////////////////////////////
 // CLICK LISTENERS
 ////////////////////////////////////
+
+// add train button
 $("#add-train").on("click", function(e) {
 
-	// prevent page from reloading upon button click
+    // prevent page from reloading upon button click
     e.preventDefault();
 
     // stores all the values the user enters
     trainName = $("#name-input").val().trim();
+    checkName(trainName);
     trainDest = $("#dest-input").val().trim();
+    checkDest(trainDest);
     trainFirstTime = $("#first-train-input").val().trim();
     checkTime(trainFirstTime);
     trainFreq = $("#freq-input").val().trim();
+    checkFreq(trainFreq);
 
     // with this '.push' method, this updates the Firebase data storage object each time a user adds a new train
-    dataRef.push({
-        trainName: trainName,
-        trainDest: trainDest,
-        trainFirstTime: trainFirstTime,
-        trainFreq: trainFreq
-    });
+    if (checkName(trainName) && checkDest(trainDest) && checkTime(trainFirstTime) && checkFreq(trainFreq)) {
+        dataRef.push({
+            trainName: trainName,
+            trainDest: trainDest,
+            trainFirstTime: trainFirstTime,
+            trainFreq: trainFreq
+        });
+    } else {
+        return false;
+    }
 
     // clears the for input fields for the next entry
     $("#name-input").val("");
     $("#dest-input").val("");
     $("#first-train-input").val("");
     $("#freq-input").val("");
-})
+});
+
+// double-click editable table cells
+$("tbody").on("dblclick", ".data-cell", function() {
+    var originalContent = $(this).text();
+    $(this).addClass("cellEditing");
+    $(this).html("<input type='text' id='quick-edit' value='" + originalContent + "'>");
+    $(this).children().first().focus(); // ???
+    $(this).children().first().keypress(function(e) {
+        if (e.which == 13) { // 'enter' key
+            var newContent = $(this).val();
+            $(this).parent().text(newContent);
+            $(this).parent().removeClass("cellEditing");
+        }
+    });
+
+    $(this).children().first().blur(function() {
+        $(this).parent().text(originalContent);
+        $(this).parent().removeClass("cellEditing");
+    });
+
+});
